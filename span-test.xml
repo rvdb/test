@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<text xmlns="http://www.tei-c.org/ns/1.0"><div>
+<div>
+  <div>
+    <p>test <milestone unit="choice" type="group" subtype="start"/>an <opener><milestone unit="abbr" type="author" subtype="start"/>abbreviation<anchor type="author" subtype="end"/><milestone unit="expan" type="author" subtype="start"/>hey </opener>expansion<anchor type="author" subtype="end"/><anchor type="group" subtype="end"/> here</p>
+  </div>
+  <div>
+    <p>test1 before <milestone unit="test" xml:id="t1s" type="author" subtype="start" spanTo="#t1e"/>test2a before <milestone unit="test" xml:id="t2as" type="author" subtype="start" spanTo="#t2ae"/>test2a wrap<anchor xml:id="t2ae" corresp="#t2as" type="author" subtype="end"/> test2a after test2b before <milestone unit="test" xml:id="t2bs" type="author" subtype="start" spanTo="#t2be"/>test2b wrap<anchor xml:id="t2be" corresp="#t2bs" type="author" subtype="end"/> test2b after <anchor xml:id="t1e" corresp="#t1s" type="author" subtype="end"/> test after</p>
+  </div>
+  <div>
+    <p>testing a nesting span <milestone unit="choice" type="group" subtype="start" resp=""/><milestone unit="abbr" type="author" subtype="start" resp=""/>here you</p>
+    <p>go, bobby!<anchor type="author" subtype="end"/><milestone unit="expan" type="author" subtype="start" resp=""/>make it better<anchor type="author" subtype="end"/><anchor type="group" subtype="end"/>, see?</p>
+  </div>
+  <div>
+    <p>Wa<milestone unit="choice" type="group" subtype="start" resp=""/><milestone unit="del" type="author" subtype="start" resp=""/>ar<anchor type="author" subtype="end"/><milestone unit="add" type="author" subtype="start" resp=""/>re<anchor type="author" subtype="end"/><anchor type="group" subtype="end"/><milestone unit="choice" type="group" subtype="start" resp=""/><milestone unit="del" type="author" subtype="start" resp=""/>ar<anchor type="author" subtype="end"/><milestone unit="add" type="author" subtype="start" resp=""/><milestone type="group" subtype="start" unit="choice"/><milestone type="editor" subtype="start" unit="abbr"/>re<anchor type="editor" subtype="end"/><milestone type="editor" subtype="start" unit="expan"/>rererererere<anchor type="editor" subtype="end"/><anchor type="group" subtype="end"/><anchor type="author" subtype="end"/><anchor type="group" subtype="end"/> het te veel van UE.</p>
+  </div>
+  <div>
+    <milestone resp="test" unit="supplied-damage" type="editor" subtype="start" spanTo="#s1a"/>
+    <p n="1a">dit is spannend <el>met nog een extra elementje</el><anchor type="editor" subtype="end" xml:id="s1a"/></p>
+    <milestone resp="test" unit="supplied-damage" type="editor" subtype="start" spanTo="#s1"/>
+    <p n="1">dit is spannend <el>met nog een extra elementje</el></p>
+    <p n="2"><el>en nog eentje</el> tot hier</p><anchor type="editor" subtype="end" xml:id="s1"/>
+    <p n="3"><milestone resp="test" unit="supplied-damage" type="editor" subtype="start" spanTo="#s1b"/><el>en nog eentje</el> tot hier<anchor type="editor" subtype="end" xml:id="s1b"/></p>
+    <p n="3b"><milestone resp="test" unit="supplied-damage" type="editor" subtype="start" spanTo="#s1c"/><el>en nog <anchor type="editor" subtype="end" xml:id="s1c"/>eentje</el> tot hier</p>
+    <p n="3c"><milestone resp="test" unit="supplied-damage" type="editor" subtype="start" spanTo="#s1d"/> woei, <el>en nog <anchor type="editor" subtype="end" xml:id="s1d"/>eentje</el> tot hier</p>
+  </div>
+  <div>
+    <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#s2"/><p n="3">dit is spannend <el>met nog een extra elementje</el></p>
+    <p n="4"><el>en nog eentje</el> tot hier<anchor type="author" subtype="end" xml:id="s2"/> en dan nog extra tekst</p>
+  </div>
+  <div>
+    <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#s3"/><p n="5">dit is spannend <el>met nog een extra elementje</el></p>
+    <p n="6"><el>en nog eentje tot hier<anchor type="author" subtype="end" xml:id="s3"/> en dan nog</el> extra tekst</p>
+  </div>
+  <div>
+    <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#s4"/><p n="7">blabla <haha/>dit is spannend <el>met nog een <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#s5"/>extra elementje</el> en hier <el>nog wat</el>, suckers</p>
+    <p n="8"><el>en</el> <el>nog</el> <anchor type="author" subtype="end" xml:id="s5"/> <el><test>eentje enzo  voort</test> en <haha>zo <anchor type="author" subtype="end" xml:id="s4"/>nog</haha> wat</el> tot hier</p>    
+  </div>
+</div>
+  <div>
+    <l n="1"><milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#span1"/>blablabla</l>
+    <l n="2">blablabla<anchor type="author" subtype="end" xml:id="span1"/> hahaha</l>
+  </div>
+  <div>
+    <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#span2"/><l n="3">blablabla</l>
+    <l n="4">blablabla<anchor type="author" subtype="end" xml:id="span2"/> hahaha</l>    
+  </div>
+  <div>
+    <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#span3"/><l n="5">blablabla</l>
+    <l n="6">blablabla<anchor type="author" subtype="end" xml:id="span3"/> hahaha</l>
+  </div>
+  <div>
+    <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#span5"/><l n="9">blablabla</l>
+    <l n="10"><milestone type="group" unit="choice" resp="editor" subtype="start"/><milestone resp="test" unit="abbr" type="author" subtype="start" spanTo="#span6"/>blablabla<anchor type="author" subtype="end" xml:id="span6"/><milestone resp="test" unit="expan" type="author" subtype="start" spanTo="#span6b"/>blablabla expan<anchor type="author" subtype="end" xml:id="span6b"/><anchor type="group" subtype="end"/> hahaha<anchor type="author" subtype="end" xml:id="span5"/></l>
+  </div>
+  <div>
+    <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#span1000"/>
+    <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#span7"/><l n="11">blablabla</l>
+    <l n="12"><milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#span8"/>blablabla<anchor type="author" subtype="end" xml:id="span8"/> hahaha<anchor type="author" subtype="end" xml:id="span7"/> hoho<anchor type="author" subtype="end" xml:id="span1000"/> haha</l>
+    <l n="13"><milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#span9"/>'t zijn lappen</l>
+    <lb/>
+    <l n="14"><el>met <milestone resp="test" unit="TEST" type="author" subtype="start" spanTo="#span10"/>oren <lb/> en poten</el> zonder meer <el>en <anchor type="author" subtype="end" xml:id="span10"/> steeltjes</el> voor <anchor type="author" subtype="end" xml:id="span9"/> iedereen!</l>
+  </div>
+</div>
+</text>

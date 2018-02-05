@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<text xmlns="http://www.tei-c.org/ns/1.0"><div>
+  <div>
+    <div>
+      <p>test <choice>an </choice><opener><choice><abbr>abbreviation</abbr><expan>hey </expan></choice></opener><choice><expan>expansion</expan></choice> here</p>
+    </div>
+    <div>
+    <p>test1 before <test>test2a before <test>test2a wrap</test> test2a after test2b before <test>test2b wrap</test> test2b after </test> test after</p>
+  </div>
+  <div>
+    <p>testing a nesting span <choice><abbr>here you</abbr></choice></p>
+    <p><choice><abbr>go, bobby!</abbr><expan>make it better</expan></choice>, see?</p>
+  </div>
+    <div>
+<p>Wa<subst><del>ar</del><add>re</add></subst><subst><del>ar</del><add><choice><abbr>re</abbr><expan>rererererere</expan></choice></add></subst> het te veel van UE.</p>
+    </div>
+    <div>
+      <p n="1a"><supplied reason="damage" resp="test">dit is spannend <el>met nog een extra elementje</el></supplied></p>
+      <p n="1"><supplied reason="damage" resp="test" corresp="#s1">dit is spannend <el>met nog een extra elementje</el></supplied></p>
+      <p n="2"><supplied reason="damage" resp="test" corresp="#s1"><el>en nog eentje</el> tot hier</supplied></p>
+      <p n="3"><supplied reason="damage" resp="test" corresp="#s1b"><el>en nog eentje</el> tot hier</supplied></p>
+      <p n="3b"><el><supplied reason="damage" resp="test" corresp="#s1c">en nog </supplied>eentje</el> tot hier</p>
+      <p n="3c"><supplied reason="damage" resp="test" corresp="#s1d"> woei, </supplied><el><supplied reason="damage" resp="test" corresp="#s1d">en nog </supplied>eentje</el> tot hier</p>
+    </div>
+    <div>
+      <p n="3"><TEST resp="test" corresp="#s2">dit is spannend <el>met nog een extra elementje</el></TEST></p>
+      <p n="4"><TEST resp="test" corresp="#s2"><el>en nog eentje</el> tot hier</TEST> en dan nog extra tekst</p>
+    </div>
+    <div>
+      <p n="5"><TEST resp="test" corresp="#s3">dit is spannend <el>met nog een extra elementje</el></TEST></p>
+      <p n="6"><el><TEST resp="test" corresp="#s3">en nog eentje tot hier</TEST> en dan nog</el> extra tekst</p>
+    </div>
+    <div>
+      <p n="7"><TEST resp="test" corresp="#s4">blabla <haha/>dit is spannend <el>met nog een <TEST resp="test" corresp="#s5">extra elementje</TEST></el><TEST resp="test" corresp="#s5"> en hier <el>nog wat</el>, suckers</TEST></TEST></p>
+      <p n="8"><TEST resp="test" n="span" corresp="#s4"><TEST resp="test" n="span" corresp="#s5"><el>en</el> <el>nog</el></TEST></TEST>  <el><TEST resp="test" n="span" corresp="#s4"><test>eentje enzo  voort</test> en </TEST><haha><TEST resp="test" n="span" corresp="#s4" xml:id="d1e56.d1t84" prev="#d1e56.d1t82">zo </TEST>nog</haha> wat</el> tot hier</p>    
+    </div>
+  </div>
+  <div>
+    <l n="1"><TEST resp="test" corresp="#span1">blablabla</TEST></l>
+    <l n="2"><TEST resp="test" corresp="#span1">blablabla</TEST> hahaha</l>
+  </div>
+  <div>
+    <l n="3"><TEST resp="test" corresp="#span2">blablabla</TEST></l>
+    <l n="4"><TEST resp="test" corresp="#span2">blablabla</TEST> hahaha</l>    
+  </div>
+  <div>
+    <l n="5"><TEST resp="test" corresp="#span3">blablabla</TEST></l>
+    <l n="6"><TEST resp="test" corresp="#span3">blablabla</TEST> hahaha</l>
+  </div>
+  <div>
+    <l n="9"><TEST resp="test" corresp="#span5">blablabla</TEST></l>
+    <l n="10"><TEST resp="test"><choice resp="editor"><abbr resp="test">blablabla</abbr><expan resp="test">blablabla expan</expan></choice> hahaha</TEST></l>
+  </div>
+  <div>
+    
+    <l n="11"><TEST resp="test" corresp="#span1000"><TEST resp="test" corresp="#span7">blablabla</TEST></TEST></l>
+    <l n="12"><TEST resp="test" corresp="#span1000"><TEST resp="test" corresp="#span7"><TEST resp="test" corresp="#span8">blablabla</TEST> hahaha</TEST> hoho</TEST> haha</l>
+    <l n="13"><TEST resp="test" corresp="#span9">'t zijn lappen</TEST></l>
+    <lb/>
+    <l n="14"><TEST resp="test" corresp="#span9"><el>met <TEST resp="test" corresp="#span10">oren <lb/> en poten</TEST></el><TEST resp="test" corresp="#span10"> zonder meer </TEST><el><TEST resp="test" corresp="#span10">en </TEST> steeltjes</el> voor </TEST> iedereen!</l>
+  </div>
+</div>
+</text>
