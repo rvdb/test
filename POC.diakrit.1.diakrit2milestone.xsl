@@ -6,29 +6,9 @@
   exclude-result-prefixes="#all"
   version="2.0">
   
-  <!-- ==================================================== -->
-  <!-- diakrit step 1:                                      -->
-  <!-- -parse diacritical codes and transform them to       -->
-  <!--     milestone tags, indicating the start and end     -->
-  <!-- -detect and connect corresponding start / end        -->
-  <!--     milestones                                       -->
-  <!-- ==================================================== -->
-  <!-- e.g.: 
-       <p>test an {<=abbreviation>[=expansion]} here</p>
-       ==>
-       <p>test an <milestone unit="choice" type="group" subtype="start"/><milestone unit="abbr" type="author" subtype="start"/>abbreviation<anchor type="author" subtype="end"/><milestone unit="expan" type="author" subtype="start"/><anchor type="author" subtype="end"/><anchor type="group" subtype="end"/> here</p>
-  -->
-  
-  <xsl:template match="/">
-    <xsl:call-template name="diakrit2milestone"/>
-  </xsl:template>
-
-  <xsl:template name="diakrit2milestone">
-    <xsl:variable name="parsed">
-      <xsl:apply-templates mode="diakrit2milestone-parse"/>
-    </xsl:variable>
-    <xsl:apply-templates select="$parsed" mode="diakrit2milestone-connect"/>
-  </xsl:template>
+  <!-- diakrit step 1:
+    parse diacritical codes and transform them to milestone tags, indicating the start and end 
+    -->
   
   <!-- regex for separator of author ID codes in diacritical start codes -->
   <xsl:variable name="regex.idsep">#</xsl:variable>
@@ -41,12 +21,12 @@
   <!-- regex for diacritical grouping markers -->
   <xsl:variable name="regex.group">([{{}}])</xsl:variable>
   
-  <xsl:template match="/" mode="not">
-    <xsl:apply-templates mode="diakrit2milestone-parse"/>
+  <xsl:template match="/">
+    <xsl:apply-templates mode="diakrit2milestone"/>
   </xsl:template>
   
   <!-- parse text and replace matching diacritical markers with milestone tags -->
-  <xsl:template match="text()" mode="diakrit2milestone-parse">
+  <xsl:template match="text()" mode="diakrit2milestone">
     <xsl:analyze-string select="." regex="\[{$regex.id}{$regex.gap}\]" flags="i">
       <xsl:matching-substring>
         <gap n="{regex-group(3)}" resp="{regex-group(2)}"/>
@@ -82,8 +62,7 @@
                         <xsl:when test="regex-group(1) = (':+', ':')">supplied-damage</xsl:when>
                         <xsl:when test="regex-group(1) = '+'">supplied</xsl:when>
                         <xsl:when test="regex-group(1) = '-'">orig</xsl:when>
-                        <xsl:when test="regex-group(1) = '?'">unclear</xsl:when>
-                        <xsl:when test="regex-group(1) = '='">expan</xsl:when>
+                        <xsl:when test="regex-group(1) = '?'">unclear</xsl:when>                <xsl:when test="regex-group(1) = '='">expan</xsl:when>
                       </xsl:choose>
                     </xsl:variable>
                     <milestone unit="{$tag}" type="editor" subtype="start" resp="{regex-group(3)}">
@@ -133,47 +112,7 @@
     </xsl:analyze-string>
   </xsl:template>
   
-  <!-- find corresponding end milestone for each start marker, and link both -->
-  <xsl:template match="tei:milestone[@subtype='start']" mode="diakrit2milestone-connect">
-    <xsl:variable name="start" select="."/>
-    <xsl:variable name="end" select="$start/following::tei:anchor[@type=$start/@type][@subtype='end']
-      [count(preceding::tei:milestone[. >> $start][@type = $start/@type][@subtype = $start/@subtype])  = count(preceding::tei:anchor[. >> $start][@type = $start/@type][@subtype = 'end'])][1]"/>
-    <xsl:variable name="element.name" select="if (@type='editor') then 'milestone' else if (@n = 'del') then 'delSpan' else 'addSpan'"/>
-    <xsl:copy>
-      <xsl:apply-templates select="@*" mode="#current"/>
-      <xsl:attribute name="xml:id">
-        <xsl:value-of select="generate-id()"/>
-      </xsl:attribute>
-      <xsl:for-each select="$end">
-        <xsl:attribute name="spanTo">
-          <xsl:value-of select="concat('#', generate-id(.))"/>
-        </xsl:attribute>
-      </xsl:for-each>
-    </xsl:copy>
-  </xsl:template>
-  
-  <!-- find corresponding start milestone for each end marker, and link both -->
-  <xsl:template match="tei:anchor[@subtype='end']" mode="diakrit2milestone-connect">
-    <xsl:variable name="end" select="."/>
-    <xsl:variable name="start" select="$end/preceding::tei:milestone[@type=$end/@type][@subtype='start']
-      [count(following::tei:anchor[. &lt;&lt; $end][@type = $end/@type][@subtype = $end/@subtype])  = count(following::tei:milestone[. &lt;&lt; $end][@type = $end/@type][@subtype = 'start'])][1]"/>
-    <xsl:variable name="element.name" select="if (@type='editor') then 'milestone' else if (@n = 'del') then 'delSpan' else 'addSpan'"/>
-    <xsl:copy>
-      <xsl:apply-templates select="@*" mode="#current"/>
-      <xsl:attribute name="xml:id">
-        <xsl:value-of select="generate-id()"/>
-      </xsl:attribute>
-      <xsl:for-each select="$start">
-        <xsl:attribute name="corresp">
-          <xsl:value-of select="concat('#', generate-id(.))"/>
-        </xsl:attribute>
-      </xsl:for-each>
-    </xsl:copy>
-  </xsl:template>
-  
-  <xsl:template match="@resp[not(normalize-space())]" mode="diakrit2milestone-connect"/>
-  
-  <xsl:template match="@*|node()" priority="-1" mode="diakrit2milestone-parse diakrit2milestone-connect">
+  <xsl:template match="@*|node()" priority="-1" mode="diakrit2milestone">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()" mode="#current"/>
     </xsl:copy>

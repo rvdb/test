@@ -180,15 +180,26 @@
   <xsl:function name="local:inWrappableContext" as="xs:boolean">
     <xsl:param name="node"/>
     <xsl:value-of select="not($node[
-      parent::tei:body|
-      parent::tei:front|
-      parent::tei:back|
-      parent::tei:ab|
-      parent::tei:div|
-      parent::tei:opener|
-      parent::tei:closer|
-      parent::tei:postscript|
-      parent::tei:lg
+      (self::*|parent::*)/self::tei:text|
+      (self::*|parent::*)/self::tei:body|
+      (self::*|parent::*)/self::tei:front|
+      (self::*|parent::*)/self::tei:div|
+      self::tei:opener|
+      self::tei:closer|
+      self::tei:salute|
+      self::tei:byline|
+      self::tei:argument|
+      self::tei:trailer|
+      self::tei:dateline|
+      self::tei:epigraph|
+      self::tei:meeting|
+      self::tei:postscript|
+      self::tei:ab|
+      self::tei:p|
+      parent::tei:table|
+      (self::*|parent::*)/self::tei:row|
+      parent::tei:list|
+      self::tei:head
       ])"/>
   </xsl:function>
   
