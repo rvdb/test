@@ -10,7 +10,8 @@
   
   <!-- ==================================================== -->
   <!-- diakrit step 3:                                      -->
-  <!-- group adjacent span fragments, and their contents    -->
+  <!-- merge adjacent spans and their contents, and link    -->
+  <!-- discontinuous spans                                  -->
   <!-- ==================================================== -->
   <!-- e.g.: 
        <p>test an 

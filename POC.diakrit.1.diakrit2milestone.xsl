@@ -43,10 +43,6 @@
   <!-- regex for diacritical grouping markers -->
   <xsl:variable name="regex.group">([{{}}])</xsl:variable>
   
-  <xsl:template match="/" mode="not">
-    <xsl:apply-templates mode="diakrit2milestone-parse"/>
-  </xsl:template>
-  
   <!-- parse text and replace matching diacritical markers with milestone tags -->
   <xsl:template match="text()" mode="diakrit2milestone-parse">
     <xsl:analyze-string select="." regex="\[{$regex.id}{$regex.gap}\]" flags="i">
