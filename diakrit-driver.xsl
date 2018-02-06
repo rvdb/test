@@ -8,8 +8,8 @@
   
   <xsl:import href="POC.diakrit.1.diakrit2milestone.xsl"/>
   <xsl:import href="POC.diakrit.2a.milestone2tags.xsl"/>
-  <xsl:import href="POC.diakrit.2.tags2spans-text-expanded.xsl"/>
-  <xsl:import href="POC.diakrit.3.regroupspans.xsl"/>
+  <xsl:import href="POC.diakrit.2.milestone2fragment.xsl"/>
+  <xsl:import href="POC.diakrit.3.fragment2span.xsl"/>
   
   <xsl:template match="/">
     <!-- upconvert diacritical string flags to milestone tags --> 
@@ -23,12 +23,12 @@
       </xsl:for-each>
     </xsl:variable>
     <!-- create discrete spans for structure-crossing spans -->
-    <xsl:variable name="wrapspans">
-      <xsl:apply-templates select="$diakrit2tags" mode="wrapspan"/>
+    <xsl:variable name="fragmentspan">
+      <xsl:apply-templates select="$diakrit2tags" mode="wrapfragment"/>
     </xsl:variable>
     <!-- regroup adjacent spans to larger chunks -->
-    <xsl:for-each select="$wrapspans">
-      <xsl:call-template name="regroup"/>
+    <xsl:for-each select="$fragmentspan">
+      <xsl:call-template name="fragment2span"/>
     </xsl:for-each>
   </xsl:template>
   

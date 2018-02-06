@@ -8,18 +8,18 @@
   exclude-result-prefixes="#all"
   version="2.0">
   
-  <!-- diakrit step 3: convert boundary-crossing start and end milestones to linked spans of separate full content elements
+  <!-- diakrit step 2: convert boundary-crossing start and end milestones to linked spans of separate full content elements
     -->
 
   <xsl:template match="/">
-    <xsl:apply-templates mode="wrapspan"/>
+    <xsl:apply-templates mode="wrapfragment"/>
   </xsl:template>
   
-  <xsl:template match="tei:anchor|tei:milestone" mode="wrapspan"/>
+  <xsl:template match="tei:anchor|tei:milestone" mode="wrapfragment"/>
   
   <!-- make sure non-wrappable elements are just copied, not wrapped -->
   <!-- ==> shouldn't this be reformed to make use of  local:isWrappable()? --> 
-  <xsl:template match="tei:text/*|tei:div|tei:ab" mode="wrapspan" priority="1">
+  <xsl:template match="tei:text/*|tei:div|tei:ab" mode="wrapfragment" priority="1">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()" mode="#current"/>
     </xsl:copy>
@@ -29,7 +29,7 @@
     -if so, wrap them
     -if not, copy them
   -->
-  <xsl:template match="tei:text//*[not(self::tei:milestone[@subtype='start']|self::tei:anchor[@subtype='end'])]" mode="wrapspan">
+  <xsl:template match="tei:text//*[not(self::tei:milestone[@subtype='start']|self::tei:anchor[@subtype='end'])]" mode="wrapfragment">
     <xsl:param name="wrapSpans" as="node()*" tunnel="yes"/>
     <xsl:variable name="spanned" select="local:isSpanned(.) except $wrapSpans"/>
 <!--<xsl:if test="$spanned[.]">
@@ -67,7 +67,7 @@
     -if so, wrap 
     -if not, copy 
   -->
-  <xsl:template match="text()[normalize-space()][local:isSpanned(.)]" mode="wrapspan">
+  <xsl:template match="text()[normalize-space()][local:isSpanned(.)]" mode="wrapfragment">
     <xsl:param name="wrapSpans" as="node()*" tunnel="yes"/>
     <xsl:variable name="spanned" select="local:isSpanned(.) except $wrapSpans"/>
     <xsl:choose>
@@ -159,7 +159,7 @@
     </xsl:choose>
   </xsl:template>
   
-  <xsl:template match="@*|node()" mode="wrapspan" priority="-1">
+  <xsl:template match="@*|node()" mode="wrapfragment" priority="-1">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()" mode="#current"/>
     </xsl:copy>

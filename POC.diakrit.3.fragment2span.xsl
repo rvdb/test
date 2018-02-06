@@ -8,39 +8,39 @@
   exclude-result-prefixes="#all"
   version="2.0">
   
-  <!-- diakrit step 4:
+  <!-- diakrit step 3:
     join adjacent spans 
     -->
   
   <xsl:param name="debug" select="false()" as="xs:boolean"/>
   
   <xsl:template match="/">
-    <xsl:call-template name="regroup"/>
+    <xsl:call-template name="fragment2span"/>
   </xsl:template>
   
-  <xsl:template name="regroup">
-    <xsl:variable name="regroup">
-      <xsl:apply-templates mode="regroup-spans"/>
+  <xsl:template name="fragment2span">
+    <xsl:variable name="fragment-merge">
+      <xsl:apply-templates select="." mode="fragment-merge"/>
     </xsl:variable>
-    <xsl:apply-templates select="$regroup" mode="regroup-connect"/>
+    <xsl:apply-templates select="$fragment-merge" mode="fragment-link"/>
   </xsl:template>
   
-  <xsl:template match="*[*/@span:type='span']" mode="regroup-spans">
+  <xsl:template match="*[*/@span:type='span']" mode="fragment-merge">
     <xsl:copy>
       <xsl:apply-templates select="@*" mode="#current"/>
-      <xsl:call-template name="recursive-group">
+      <xsl:call-template name="fragment-merge">
 <!--        <xsl:with-param name="context" select="node()"/>
 -->      </xsl:call-template>
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="@span:type[. = 'span']" mode="regroup-spans">
+  <xsl:template match="@span:type[. = 'span']" mode="fragment-merge">
     <xsl:attribute name="{name()}">
       <xsl:text>group</xsl:text>
     </xsl:attribute>
   </xsl:template>
 
-  <xsl:template name="recursive-group">
+  <xsl:template name="fragment-merge">
     <xsl:param name="context" select="node()"/>
       <xsl:for-each-group select="$context" group-adjacent="boolean(self::*[@span:type='span'][@span:corresp][@span:corresp = (preceding-sibling::node()[not(self::text()[not(normalize-space())])][1]|following-sibling::node()[not(self::text()[not(normalize-space())])][1])[@span:type='span'][@span:corresp]/@span:corresp] or self::text()[not(normalize-space())][preceding-sibling::node()[1][@span:type='span'][@span:corresp]/@span:corresp = following-sibling::node()[1][@span:type='span'][@span:corresp]/@span:corresp])">    
         
@@ -52,7 +52,7 @@
               <xsl:copy-of select="current-group()/(self::*/node()|self::node()[not(self::*)])"/>
               </xsl:variable>
                             
-              <xsl:call-template name="recursive-group">
+              <xsl:call-template name="fragment-merge">
                 <xsl:with-param name="context" select="$newcontext/node()"/>
               </xsl:call-template>
 
@@ -67,7 +67,7 @@
   </xsl:template>
     
   <!-- convert tei:choice with tei:del|tei:add to tei:subst -->
-  <xsl:template match="tei:choice[tei:del]" mode="regroup-connect">
+  <xsl:template match="tei:choice[tei:del]" mode="fragment-link">
     <subst>
       <xsl:choose>
         <xsl:when test="@span:type=('span', 'group')">
@@ -82,7 +82,7 @@
   </xsl:template>
   
   <!-- convert tei:supplied-damage to tei:supplied[@reason='damage'] -->
-  <xsl:template match="tei:supplied-damage" mode="regroup-connect">
+  <xsl:template match="tei:supplied-damage" mode="fragment-link">
     <supplied reason="damage">
       <xsl:choose>
         <xsl:when test="@span:type=('span', 'group')">
@@ -96,7 +96,7 @@
     </supplied>
   </xsl:template>
   
-  <xsl:template match="*[@span:type=('span', 'group')]" mode="regroup-connect" priority="-.5">
+  <xsl:template match="*[@span:type=('span', 'group')]" mode="fragment-link" priority="-.5">
     <xsl:copy copy-namespaces="no">
       <xsl:call-template name="regroup-attributes"/>
       <xsl:apply-templates select="node()" mode="#current"/>
@@ -126,13 +126,13 @@
     </xsl:if>
   </xsl:template>
   
-  <xsl:template match="@span:*" mode="regroup-connect">
+  <xsl:template match="@span:*" mode="fragment-link">
     <xsl:if test="$debug">
       <xsl:copy-of select="."/>
     </xsl:if>
   </xsl:template>
   
-  <xsl:template match="@*|node()" priority="-1" mode="regroup-spans regroup-connect">
+  <xsl:template match="@*|node()" priority="-1" mode="fragment-merge fragment-link">
     <xsl:copy copy-namespaces="no">
       <xsl:apply-templates select="@*|node()" mode="#current"/>
     </xsl:copy>
