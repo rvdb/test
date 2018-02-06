@@ -24,9 +24,11 @@
   </xsl:template>
 
   <xsl:template name="diakrit2milestone">
+    <!-- parse diacritical codes to milestone tags -->
     <xsl:variable name="parsed">
-      <xsl:apply-templates mode="diakrit2milestone-parse"/>
+      <xsl:apply-templates select="." mode="diakrit2milestone-parse"/>
     </xsl:variable>
+    <!-- detect and connect corresponding start / end milestones -->
     <xsl:apply-templates select="$parsed" mode="diakrit2milestone-connect"/>
   </xsl:template>
   

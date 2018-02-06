@@ -7,45 +7,22 @@
   version="2.0">
   
   <xsl:import href="POC.diakrit.1.diakrit2milestone.xsl"/>
-  <!-- not needed anymore -->
-  <xsl:import href="POC.diakrit.2a.milestone2tags.xsl"/>
-  <xsl:import href="POC.diakrit.2.tags2spans-text-expanded.xsl"/>
-  <xsl:import href="POC.diakrit.3.regroupspans.xsl"/>
+  <xsl:import href="POC.diakrit.2.milestone2fragment.xsl"/>
+  <xsl:import href="POC.diakrit.3.fragment2span.xsl"/>
   
   <xsl:template match="/">
     <!-- parse diacritical string flags to milestone markers --> 
     <xsl:variable name="diakrit2milestone">
       <xsl:call-template name="diakrit2milestone"/>
     </xsl:variable>
-    <!-- create discrete spans for structure-crossing spans -->
-    <xsl:variable name="wrapspans">
-      <xsl:apply-templates select="$diakrit2milestone" mode="wrapspan"/>
+    <!-- transform milestones to discrete "content" fragments -->
+    <xsl:variable name="fragmentspan">
+      <xsl:apply-templates select="$diakrit2milestone" mode="wrapfragment"/>
     </xsl:variable>
-    <!-- regroup adjacent spans to larger chunks -->
-    <xsl:for-each select="$wrapspans">
-      <xsl:call-template name="regroup"/>
+    <!-- regroup adjacent fragments to larger chunks -->
+    <xsl:for-each select="$fragmentspan">
+      <xsl:call-template name="fragment2span"/>
     </xsl:for-each>
   </xsl:template>
   
-  <xsl:template match="/" priority="-100">
-    <!-- upconvert diacritical string flags to milestone tags --> 
-    <xsl:variable name="diakrit2milestone">
-      <xsl:apply-templates mode="diakrit2milestone-parse"/>
-    </xsl:variable>
-    <!-- upconvert diacritical milestone tags to full elements where possible --> 
-    <xsl:variable name="diakrit2tags">
-      <xsl:for-each select="$diakrit2milestone">
-        <xsl:call-template name="diakrit2tags"/>
-      </xsl:for-each>
-    </xsl:variable>
-    <!-- create discrete spans for structure-crossing spans -->
-    <xsl:variable name="wrapspans">
-      <xsl:apply-templates select="$diakrit2tags" mode="wrapspan"/>
-    </xsl:variable>
-    <!-- regroup adjacent spans to larger chunks -->
-    <xsl:for-each select="$wrapspans">
-      <xsl:call-template name="regroup"/>
-    </xsl:for-each>
-  </xsl:template>
-
 </xsl:stylesheet>

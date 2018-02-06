@@ -11,7 +11,7 @@
   <!-- ==================================================== -->
   <!-- diakrit step 2:                                      -->
   <!-- convert start and end milestones to discrete,        -->
-  <!-- linked fragments of full content elements            -->
+  <!-- linked fragmented spans of full content elements     -->
   <!-- ==================================================== -->
   <!-- e.g.: 
        <p>test an <milestone unit="choice" type="group" subtype="start"/><milestone unit="abbr" type="author" subtype="start"/>abbreviation<anchor type="author" subtype="end"/><milestone unit="expan" type="author" subtype="start"/>expansion<anchor type="author" subtype="end"/><anchor type="group" subtype="end"/> here</p>
@@ -27,18 +27,18 @@
   -->
   
   <xsl:template match="/">
-    <xsl:apply-templates mode="wrapspan"/>
+    <xsl:apply-templates mode="wrapfragment"/>
   </xsl:template>
   
-  <xsl:template match="tei:anchor|tei:milestone" mode="wrapspan" priority="1"/>
+  <xsl:template match="tei:anchor|tei:milestone" mode="wrapfragment" priority="1"/>
   
   <!-- determine if elements or text need to be wrapped:
-    -if so: wrap them in all "active" spans at that point
+    -if so: wrap them in all "active" span markers at that point
     -if not: copy them 
   -->  
   <xsl:template match="*(:[not(self::tei:milestone[@subtype='start']|self::tei:anchor[@subtype='end'])]:)[local:inWrappableContext(.)][local:isSpanned(.)]|
     text()(:[local:inWrappableContext(.)]:)[local:isSpanned(.)][normalize-space()]
-    " mode="wrapspan">
+    " mode="wrapfragment">
     <!-- a stack of all "active" spans for the current node -->
     <xsl:param name="spans.active" as="node()*" tunnel="yes"/>
     <!-- determine if the node is inside a 'new' span (which has not already converted to a wrapper element -->
@@ -73,17 +73,12 @@
     <!-- could also be done in 1 step by extending the predicate tests for $span.start, but a separate step improves transparency -->
     <xsl:variable name="span.start.balanced" select="$span.start[@spanTo/replace(., '^#', '') = $span.end/@xml:id]"/>
     <xsl:if test="$span.start.balanced">
-<!--      <xsl:message>
-        $span.start: <xsl:copy-of select="$span.start"/>
-        $span.end: <xsl:copy-of select="$span.end"/>
-        $node: <xsl:copy-of select="$node"/>
-      </xsl:message>-->
       <xsl:sequence select="$span.start.balanced"/>
       <xsl:sequence select="$span.end"/>
     </xsl:if>
   </xsl:function>
   
-  <!-- template that wraps a spanned node in a (hierarchy of) wrapping element(s) -->
+  <!-- template that wraps a node in a (hierarchy of) wrapping element(s) -->
   <xsl:template name="wrap">
     <!-- the content to be wrapped -->
     <xsl:param name="wrap.content" tunnel="yes"/>
@@ -99,17 +94,17 @@
       <!-- if there is a new span, wrap the contents in a (hierarchy of) wrapper element(s) -->
       <xsl:when test="$currentSpan.start">
         <xsl:element name="{$currentSpan.start/@unit}">
-          <!-- only identify a discontinued span if the start and end are no siblings -->
+          <!-- only identify a fragmented span if the start and end are no siblings -->
           <xsl:if test="not($currentSpan.start/parent::*[local:inWrappableContext(.)] is $currentSpan.end/parent::*)">
-            <!-- NOTE: this identification is crucial for later joining of connected spans ==> therefore, a more complex test is kept here, too -->
+            <!-- NOTE: this identification is crucial for later joining of connected spans ==> therefore, a reference to a more complex test is kept here, too -->
             <!--           
           <xsl:if test="$wrap.content[1] >> $currentSpan.start[not(following-sibling::node()[1] is $wrap.content[1]/ancestor-or-self::*[1])] or $wrap.content[last()] &lt;&lt; $currentSpan.end[not(preceding-sibling::node()[1] is $wrap.content[l]/ancestor-or-self::*[1])]">
 -->
-            <!-- identifies a wrapper element as part of a bigger span -->
+            <!-- identifies a span as a fragment of a bigger span -->
             <xsl:attribute name="span:type">
               <xsl:text>fragment</xsl:text>
             </xsl:attribute>
-            <!-- identifies the corresponding parts for the current span -->
+            <!-- identifies the corresponding fragments for the current span -->
             <xsl:attribute name="span:corresp">
               <xsl:value-of select="$currentSpan.start/@spanTo"/>
             </xsl:attribute>
@@ -120,9 +115,9 @@
           <xsl:copy-of select="$currentSpan.start/@resp"/>
           <!-- further traverse the hierarchy of "active" spans, until the content has been wrapped in the entire wrapping hierarchy -->
           <xsl:call-template name="wrap">
-            <!-- remove the outermost span from the "new" stack -->
+            <!-- remove the outermost milestone markers from the "new" stack -->
             <xsl:with-param name="spans.new" select="subsequence($spans.new, 2)"/>
-            <!-- pass along the list of active scans for further processing -->
+            <!-- pass along the list of active spans for further processing -->
             <xsl:with-param name="spans.active" select="$spans.active|$spans.new" tunnel="yes"/>
           </xsl:call-template>
         </xsl:element>
@@ -134,7 +129,7 @@
     </xsl:choose>
   </xsl:template>
     
-  <xsl:template match="@*|node()" mode="wrapspan" priority="-1">
+  <xsl:template match="@*|node()" mode="wrapfragment" priority="-1">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()" mode="#current"/>
     </xsl:copy>
