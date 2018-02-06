@@ -26,6 +26,9 @@
        here</p>
   -->
   
+  <!-- a key for more efficient location of corresponding end milestones -->
+  <xsl:key name="span-end" match="tei:anchor[@subtype='end']" use="@xml:id"/>
+  
   <xsl:template match="/">
     <xsl:apply-templates mode="wrapfragment"/>
   </xsl:template>
@@ -63,18 +66,21 @@
   -->
   <xsl:function name="local:isSpanned">
     <xsl:param name="node"/>
-    <xsl:variable name="span.start" select="$node/(preceding::tei:milestone|descendant::tei:milestone)[@subtype='start'][every $i in @spanTo satisfies following::tei:anchor[. >> $node][@subtype='end'][@xml:id = $i/replace(., '^#', '')]]
+    <xsl:variable name="node.root" select="$node/root()"/>
+    <xsl:variable name="span.start" select="$node/preceding::tei:milestone[@subtype='start'][key('span-end', replace(@spanTo, '^#', ''), $node.root) >> $node]
       [. &lt;&lt; $node or not(preceding::node()
-      [not(self::text()[not(normalize-space())])][1] &gt;&gt; $node)]
+      [not(self::text()[not(normalize-space())])][1] >> $node)]
       "/>
-    <xsl:variable name="span.end" select="$span.start/following::tei:anchor[@subtype='end'][@xml:id = $span.start/@spanTo/replace(., '^#', '')]
-      [not(following::node()
-      [not(self::text()[not(normalize-space())])][1] intersect $node/descendant::node())]"/>
-    <!-- could also be done in 1 step by extending the predicate tests for $span.start, but a separate step improves transparency -->
-    <xsl:variable name="span.start.balanced" select="$span.start[@spanTo/replace(., '^#', '') = $span.end/@xml:id]"/>
-    <xsl:if test="$span.start.balanced">
-      <xsl:sequence select="$span.start.balanced"/>
-      <xsl:sequence select="$span.end"/>
+    <xsl:if test="$span.start">
+      <xsl:variable name="span.end" select="for $i in $span.start return key('span-end', replace($i/@spanTo, '^#', ''), $node.root)[. >> $i]
+        [not(following::node()
+        [not(self::text()[not(normalize-space())])][1] intersect $node/descendant::node())]"/>
+      <!-- could also be done in 1 step by extending the predicate tests for $span.start, but a separate step improves transparency -->
+      <xsl:variable name="span.start.balanced" select="$span.start[key('span-end', replace(@spanTo, '^#', ''), $node.root) intersect $span.end]"/>
+      <xsl:if test="$span.start.balanced">
+        <xsl:sequence select="$span.start.balanced"/>
+        <xsl:sequence select="$span.end"/>
+      </xsl:if>
     </xsl:if>
   </xsl:function>
   
@@ -89,7 +95,7 @@
     <!-- the start of the outermost "new" span -->
     <xsl:param name="currentSpan.start" select="$spans.new[@subtype='start'][1]"/>
     <!-- the end of the outermost "new" span -->
-    <xsl:variable name="currentSpan.end" select="$spans.new[@subtype='end'][@xml:id = $currentSpan.start/@spanTo/replace(., '^#', '')][1]"/>
+    <xsl:variable name="currentSpan.end" select="(key('span-end', $currentSpan.start/@spanTo/replace(., '^#', '')) intersect $spans.new)[1]"/>
     <xsl:choose>
       <!-- if there is a new span, wrap the contents in a (hierarchy of) wrapper element(s) -->
       <xsl:when test="$currentSpan.start">
